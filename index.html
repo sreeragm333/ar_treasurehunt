@@ -1,17 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AR.js A-Frame Location-based</title>
-<script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
-<script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
-<script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
+  <title>AR.js A-Frame Location-based</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
+  <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+  <script src="https://rawgit.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
 </head>
 <body>
-    
 <a-scene vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true'>
-    <a-camera gps-new-camera='gpsMinDistance: 5'  maxDistance="20"  ></a-camera>
-    <a-entity  gltf-model="/assets/scene.gltf" gps-new-entity-place="latitude: 10.045083; longitude: 76.329060" scale="1 1 1"></a-entity>
+    <!-- Add a video element to capture the camera feed -->
+    <video id="cameraFeed" autoplay playsinline style="display: none;"></video>
+
+    <!-- Use getUserMedia to access the camera -->
+    <script>
+      // Get the video element
+      const video = document.getElementById('cameraFeed');
+
+      // Check if getUserMedia is available in the browser
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ video: true })
+          .then(function (stream) {
+            // Assign the camera stream to the video element
+            video.srcObject = stream;
+          })
+          .catch(function (error) {
+            console.error('Error accessing camera:', error);
+          });
+      } else {
+        console.error('getUserMedia is not supported in this browser.');
+      }
+    </script>
+
+    <!-- Set up the AR camera -->
+    <a-camera gps-new-camera='gpsMinDistance: 5' maxDistance="20" gps-camera zoom="1"></a-camera>
+    <a-entity gltf-model="/assets/scene.gltf" gps-new-entity-place="latitude: 10.045083; longitude: 76.329060" scale="1 1 1"></a-entity>
 </a-scene>
 </body>
 </html>
